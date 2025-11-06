@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  employeeservice_db:
+    image: mysql:8
+    container_name: employeeservice_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pxl'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: employeeservice_db
+    ports:
+    - "3306:3306"
+    restart: always
