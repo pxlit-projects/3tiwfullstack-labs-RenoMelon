@@ -1,22 +1,22 @@
 package be.pxl.services.domain.dto;
 
+import jakarta.persistence.ElementCollection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeRequest {
+public class DepartmentRequest {
 
-    // Niet zeker of ik deze IDs moet meegeven in de request, mss nog ff checken hoe dat zit qua microservices architectuur
     private Long organizationId;
-    private Long departmentId;
     private String name;
-    private int age;
+    private List<Long> employeeIds;
     private String position;
-
 
 }

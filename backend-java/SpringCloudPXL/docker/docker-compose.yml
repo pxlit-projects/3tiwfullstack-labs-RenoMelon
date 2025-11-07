@@ -11,3 +11,15 @@ services:
     ports:
     - "3306:3306"
     restart: always
+
+  # Service voor de Department database  <--- NIEUW!
+  department_db:
+    image: mysql:8
+    container_name: departmentservice_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pxl'
+      MYSQL_DATABASE: departmentservice_db # Andere databasenaam
+    ports:
+      # Host poort 3307 wordt gekoppeld aan container poort 3306
+      - "3307:3306"
+    restart: always
