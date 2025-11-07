@@ -1,6 +1,8 @@
 package be.pxl.services.services;
 
 import be.pxl.services.domain.Employee;
+import be.pxl.services.domain.dto.EmployeeRequest;
+import be.pxl.services.domain.dto.EmployeeResponse;
 import be.pxl.services.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +14,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
 
-    @Autowired
+
     private final EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+
+
+    @Override
+    public List<EmployeeResponse> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream().map(employee -> mapToEmployeeResponse(employee)).toList();
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public void addEmployee(EmployeeRequest request) {
+        Employee employee = Employee.builder()
+                .age(request.getAge())
+                .name(request.getName())
+                .position(request.getPosition())
+                .build();
+        employeeRepository.save(employee);
+    }
+
+    public EmployeeResponse mapToEmployeeResponse(Employee employee) {
+        return EmployeeResponse.builder()
+                .age(employee.getAge())
+                .name(employee.getName())
+                .position(employee.getPosition())
+                .build();
+
     }
 }

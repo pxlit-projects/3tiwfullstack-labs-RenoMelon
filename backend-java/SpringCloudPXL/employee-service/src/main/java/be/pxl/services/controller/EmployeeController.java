@@ -1,6 +1,7 @@
 package be.pxl.services.controller;
 
 import be.pxl.services.domain.Employee;
+import be.pxl.services.domain.dto.EmployeeRequest;
 import be.pxl.services.services.IEmployeeService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,14 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity getEmployees(){
         return new ResponseEntity(employeeService.getAllEmployees(), HttpStatus.OK);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addEmployee(@RequestBody EmployeeRequest request){
+        employeeService.addEmployee(request);
+
+
     }
 
 }
