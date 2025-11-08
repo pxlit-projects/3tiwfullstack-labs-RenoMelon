@@ -1,15 +1,19 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Customer } from './shared/models/customer.model';
+import { CommonModule } from '@angular/common';
+import { Navbar } from './core/navbar/navbar';
+import { CustomerList } from './core/customers/customer-list/customer-list';
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule, Navbar, CustomerList],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
+
 export class App {
   protected readonly title = signal('customer-app');
 
@@ -22,3 +26,5 @@ export class App {
     console.log(c2);
   }
 }
+
+
