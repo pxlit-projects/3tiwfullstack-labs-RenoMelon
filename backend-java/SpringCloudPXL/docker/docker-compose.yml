@@ -35,3 +35,6 @@ services:
       # Host poort 3308 wordt gekoppeld aan container poort 3306
       - "3308:3306"
     restart: always
+
+
+# Hier komt nog notificationservice_db

@@ -9,6 +9,5 @@ public interface IOrganizationService {
 
     List<OrganizationResponse> getAllOrganizations();
 
-    void addOrganization(OrganizationRequest organizationRequest);
 
 }

@@ -21,10 +21,6 @@ public class OrganizationService implements IOrganizationService {
         return organizations.stream().map(organization -> mapToOrganizationResponse(organization)).toList();
     }
 
-    @Override
-    public void addOrganization(OrganizationRequest organizationRequest) {
-    // Hier verder gaan morgen (alleen de post nog maken en dan basis van NotificationService opzetten)
-    }
 
     private OrganizationResponse mapToOrganizationResponse(Organization organization) {
         return OrganizationResponse.builder()
