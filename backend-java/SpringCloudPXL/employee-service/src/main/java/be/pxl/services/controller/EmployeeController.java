@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("api/employee")
 public class EmployeeController {
 
-    @Autowired
+
     private final IEmployeeService employeeService;
 
 
@@ -25,7 +25,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity getEmployees(){
         return new ResponseEntity(employeeService.getAllEmployees(), HttpStatus.OK);
     }
@@ -38,10 +38,30 @@ public class EmployeeController {
 
     }
 
-    @GetMapping("getEmployeesById")
+    @GetMapping()
     public ResponseEntity<List<EmployeeResponse>> findEmployeesByIds(@RequestParam List<Long> ids){
         List<EmployeeResponse> employeeResponses = employeeService.findEmployeesByIds(ids);
         return ResponseEntity.ok().body(employeeResponses);
     }
+
+    // Endpoints voor Lab
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeResponse> findEmployeeById(@PathVariable Long id){
+        return employeeService.findEmployeeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<List<EmployeeResponse>> findEmployeesByDepartment(@PathVariable Long departmentId){
+        return ResponseEntity.ok(employeeService.findEmployeesByDepartment(departmentId));
+    }
+
+    @GetMapping("/organization/{organizationId}")
+    public ResponseEntity<List<EmployeeResponse>> findEmployeesByOrganization(@PathVariable Long organizationId){
+        return ResponseEntity.ok(employeeService.findEmployeesByOrganization(organizationId));
+    }
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public List<EmployeeResponse> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
-        return employees.stream().map(employee -> mapToEmployeeResponse(employee)).toList();
+        return employees.stream().map(this::mapToEmployeeResponse).toList();
     }
 
     @Override
@@ -42,6 +43,29 @@ public class EmployeeService implements IEmployeeService {
                 .map(this::mapToEmployeeResponse)
                 .toList();
     }
+
+    @Override
+    public Optional<EmployeeResponse> findEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .map(this::mapToEmployeeResponse);
+    }
+
+    @Override
+    public List<EmployeeResponse> findEmployeesByDepartment(Long departmentId) {
+        return employeeRepository.findByDepartmentId(departmentId)
+                .stream()
+                .map(this::mapToEmployeeResponse)
+                .toList();
+    }
+
+    @Override
+    public List<EmployeeResponse> findEmployeesByOrganization(Long organizationId) {
+        return employeeRepository.findByOrganizationId(organizationId)
+                .stream()
+                .map(this::mapToEmployeeResponse)
+                .toList();
+    }
+
 
     public EmployeeResponse mapToEmployeeResponse(Employee employee) {
         return EmployeeResponse.builder()
