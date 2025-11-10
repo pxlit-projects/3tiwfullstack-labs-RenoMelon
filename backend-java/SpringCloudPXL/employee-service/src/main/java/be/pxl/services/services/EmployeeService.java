@@ -35,11 +35,22 @@ public class EmployeeService implements IEmployeeService {
         employeeRepository.save(employee);
     }
 
+    @Override
+    public List<EmployeeResponse> findEmployeesByIds(List<Long> ids) {
+        return employeeRepository.findAllById(ids)
+                .stream()
+                .map(this::mapToEmployeeResponse)
+                .toList();
+    }
+
     public EmployeeResponse mapToEmployeeResponse(Employee employee) {
         return EmployeeResponse.builder()
+                .id(employee.getId())
                 .age(employee.getAge())
                 .name(employee.getName())
                 .position(employee.getPosition())
+                .departmentId(employee.getDepartmentId())
+                .organizationId(employee.getOrganizationId())
                 .build();
 
     }

@@ -11,6 +11,8 @@ public interface IEmployeeService {
     List<EmployeeResponse> getAllEmployees();
 
     void addEmployee(EmployeeRequest request);
+
+    List<EmployeeResponse> findEmployeesByIds(List<Long> ids);
 }
 
 
