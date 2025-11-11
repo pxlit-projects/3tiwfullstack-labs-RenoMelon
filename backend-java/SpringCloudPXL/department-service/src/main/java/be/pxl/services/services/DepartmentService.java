@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class DepartmentService implements IDepartmentService {
@@ -36,6 +36,49 @@ public class DepartmentService implements IDepartmentService {
                 .organizationId(request.getOrganizationId())
                 .build();
         departmentRepository.save(department);
+    }
+
+    @Override
+    public Optional<DepartmentResponse> findDepartmentById(Long id) {
+        return departmentRepository.findById(id).map(this::mapToDepartmentResponse);
+    }
+
+    @Override
+    public List<DepartmentResponse> findDepartmentsByOrganization(Long organizationId) {
+        return departmentRepository.findDepartmentsByOrganizationId(organizationId)
+                .stream()
+                .map(this::mapToDepartmentResponse)
+                .toList();
+    }
+
+    @Override
+    public List<DepartmentWithEmployeesResponse> findDepartmentsByOrganizationWithEmployees(Long organizationId) {
+
+        List<Department> departments = departmentRepository.findDepartmentsByOrganizationId(organizationId);
+
+        // Verzamel alle employees van deze departementen in 1 grote lijst
+
+        List<Long> allEmployeeIds = departments.stream()
+                .flatMap(department -> department.getEmployeeIds().stream())
+                .distinct()
+                .toList();
+
+        String employeeUrl = "http://localhost:8081/api/employee?ids=" + String.join(",",
+                allEmployeeIds.stream().map(String::valueOf).toList());
+        EmployeeDTO[] employeesArray = restTemplate.getForObject(employeeUrl, EmployeeDTO[].class);
+        List<EmployeeDTO> employees = (employeesArray != null) ? Arrays.asList(employeesArray) : List.of();
+
+        Map<Long, EmployeeDTO> employeeMap = employees.stream()
+                .collect(Collectors.toMap(EmployeeDTO::id, employee -> employee));
+
+        return departments.stream().map(department -> {
+            List<EmployeeDTO> departmentEmployees = department.getEmployeeIds()
+                    .stream()
+                    .map(employeeMap::get)
+                    .filter(java.util.Objects::nonNull)
+                    .toList();
+            return new DepartmentWithEmployeesResponse(department.getId(), department.getName(), departmentEmployees);
+        }).toList();
     }
 
     public DepartmentWithEmployeesResponse findDepartmentWithEmployees(Long departmentId){
