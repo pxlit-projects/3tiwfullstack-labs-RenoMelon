@@ -1,4 +1,6 @@
 package be.pxl.services.domain.dto;
 
-public record OrganizationWithEmployeesResponse() {
+import java.util.List;
+
+public record OrganizationWithEmployeesResponse(Long id, String name, List<EmployeeDTO> employees) {
 }

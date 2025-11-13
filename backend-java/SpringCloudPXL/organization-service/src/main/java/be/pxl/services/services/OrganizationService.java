@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,17 +33,45 @@ public class OrganizationService implements IOrganizationService {
     // Hier verder gaan (Lab bijna klaar)
     @Override
     public OrganizationWithDepartmentsResponse findByIdWithDepartments(Long id) {
-        return null;
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        String deptUrl = "http://localhost:8082/api/department/organization/" + organization.getId();
+
+        DepartmentDTO[] departmentsArray = restTemplate.getForObject(deptUrl, DepartmentDTO[].class);
+        List<DepartmentDTO> departments = (departmentsArray != null) ? Arrays.asList(departmentsArray) : List.of();
+
+        return new OrganizationWithDepartmentsResponse(
+                organization.getId(),
+                organization.getName(),
+                departments
+        );
+
     }
 
     @Override
     public OrganizationWithEmployeesResponse findByIdWithEmployees(Long id) {
-        return null;
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        String empUrl = "http://localhost:8081/api/employee/organization/" + organization.getId();
+        EmployeeDTO[] employeesArray = restTemplate.getForObject(empUrl, EmployeeDTO[].class);
+        List<EmployeeDTO> employees = (employeesArray != null) ? Arrays.asList(employeesArray) : List.of();
+
+        return new OrganizationWithEmployeesResponse(organization.getId(), organization.getName(), employees);
     }
 
     @Override
     public OrganizationWithDepartmentsAndEmployeesResponse findByIdWithDepartmentsAndEmployees(Long id) {
-        return null;
+        Organization organization = organizationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        String url = "http://localhost:8082/api/department/organization/" + organization.getId() + "/with-employees";
+        DepartmentWithEmployeesDTO[] deptsWithEmpsArray = restTemplate.getForObject(url, DepartmentWithEmployeesDTO[].class);
+        List<DepartmentWithEmployeesDTO> departmentsWithEmployees = (deptsWithEmpsArray != null) ? Arrays.asList(deptsWithEmpsArray) : List.of();
+
+        return new OrganizationWithDepartmentsAndEmployeesResponse(organization.getId(), organization.getName(), departmentsWithEmployees);
+
     }
 
 

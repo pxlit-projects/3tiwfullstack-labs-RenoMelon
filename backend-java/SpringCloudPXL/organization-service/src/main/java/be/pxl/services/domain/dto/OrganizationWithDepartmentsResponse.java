@@ -1,4 +1,6 @@
 package be.pxl.services.domain.dto;
 
-public record OrganizationWithDepartmentsResponse() {
+import java.util.List;
+
+public record OrganizationWithDepartmentsResponse(Long id, String name, List<DepartmentDTO> departments) {
 }
