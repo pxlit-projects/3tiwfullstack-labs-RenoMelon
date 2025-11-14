@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -20,7 +21,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -63,6 +67,36 @@ public class EmployeeTests {
                 .andExpect(status().isCreated());
 
         assertEquals(1, employeeRepository.findAll().size());
+
+    }
+
+    @Test
+    public void testFindEmployeesByDepartment() throws Exception {
+        Employee employee = Employee.builder()
+                .age(22)
+                .name("Roos De Prest")
+                .position("Head of Design")
+                .departmentId(1L)
+                .organizationId(1L)
+                .build();
+        Employee employee2 = Employee.builder()
+                .age(22)
+                .name("Poos De Rest")
+                .position("Dead of Hesign")
+                .departmentId(2L)
+                .organizationId(1L)
+                .build();
+
+        employeeRepository.save(employee);
+        employeeRepository.save(employee2);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/employee/department/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("Roos De Prest")))
+                .andExpect(jsonPath("$[0].position", is("Head of Design")));
+
+        assertEquals(1, employeeRepository.findByDepartmentId(1L).size());
+
 
     }
 
