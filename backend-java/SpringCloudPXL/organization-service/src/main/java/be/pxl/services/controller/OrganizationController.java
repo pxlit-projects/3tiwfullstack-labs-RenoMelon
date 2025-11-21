@@ -18,7 +18,7 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
 
-    @GetMapping()
+    @GetMapping("/all")
     public ResponseEntity getAllOrganizations() {
         return ResponseEntity.ok(organizationService.getAllOrganizations());
     }
