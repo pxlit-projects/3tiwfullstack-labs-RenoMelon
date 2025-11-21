@@ -14,34 +14,37 @@ import { CustomerService } from '../../../shared/services/customerService';
 })
 export class CustomerList implements OnInit{
 
-  customers!:Customer[]
   filteredData!: Customer[]
   customerService: CustomerService = inject(CustomerService);
 
   ngOnInit(): void{
 
-    this.customers = this.customerService.getCustomers();
- 
-    this.customers[1].isLoyal = true;
-    this.filteredData = this.customers;
+    this.customerService.getCustomers().subscribe({
+     next: () => this.fetchData()
+    });
   }
 
-  
+
   handleFilter(filter: FilterModel){
-    this.filteredData = this.customers.filter(customer => this.customerService.filterCustomers(filter));
+    this.customerService.filterCustomers(filter).subscribe({
+      next: customers => this.filteredData = customers
+    });
   }
 
-  private isCustomerMatchingFilter(customer: Customer, filter: FilterModel): boolean {
-    const matchesName = customer.name.toLowerCase().includes(filter.name.toLowerCase());
-    const matchesCity = customer.city.toLowerCase().includes(filter.city.toLowerCase());
-    const matchesVat = filter.vat ? customer.vat === filter.vat : true;
 
-    return matchesName && matchesCity && matchesVat;
-  } 
 
   processAdd(customer: Customer){
-    this.customerService.addCustomer(customer);
-    this.filteredData = this.customerService.getCustomers();
+    this.customerService.addCustomer(customer).subscribe({
+      next: () => this.fetchData()
+    });
+  }
+
+  fetchData(): void {
+    this.customerService.getCustomers().subscribe({
+      next: customers => {
+        this.filteredData = customers;
+      }
+    });
   }
 
 }

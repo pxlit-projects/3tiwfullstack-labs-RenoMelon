@@ -1,28 +1,29 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Customer } from '../models/customer.model';
 import { FilterModel } from '../models/FilterModel';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CustomerService {
+
+  api: string = "api/customers";
+  http: HttpClient = inject(HttpClient);
   
-  customers: Customer[] = [
-    new Customer('Dries Swinnen', 'dries@pxl.be', 'Pelt', 'mystreet', 'Belgium', 21),
-    new Customer('John Doe', 'john@doe.be', 'New York', '5th Avenue', 'USA', 6),
-    new Customer('Jane Doe', 'jane@doe.be', 'Los Angeles', 'Sunset Boulevard', 'USA', 6)
-]
-
-  getCustomers(): Customer[] {
-      return this.customers;
-  } 
-
-  addCustomer(customer: Customer): void {
-      this.customers.push(customer);
+  getCustomers(): Observable<Customer[]>{
+    return this.http.get<Customer[]>(this.api)
   }
 
-  filterCustomers(filter: FilterModel): Customer[] {
-    return this.customers.filter(customer => this.isCustomerMatchingFilter(customer, filter));
+  addCustomer(customer: Customer): Observable<Customer> {
+    return this.http.post<Customer>(this.api, customer);
+}
+
+ filterCustomers(filter: FilterModel): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.api).pipe(
+      map((customers: Customer[]) => customers.filter(customer => this.isCustomerMatchingFilter(customer, filter)))
+    );
   }
 
   private isCustomerMatchingFilter(customer: Customer, filter: FilterModel): boolean {
