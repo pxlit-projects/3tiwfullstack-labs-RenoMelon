@@ -7,6 +7,8 @@ import be.pxl.services.domain.dto.DepartmentWithEmployeesResponse;
 import be.pxl.services.domain.dto.EmployeeDTO;
 import be.pxl.services.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,9 +21,11 @@ public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final RestTemplate restTemplate;
+    private final static Logger log = LoggerFactory.getLogger(DepartmentService.class);
 
     @Override
     public List<DepartmentResponse> getAllDepartments() {
+        log.info("Fetching all departments from database...");
         List<Department> departments = departmentRepository.findAll();
         return departments.stream().map(department -> mapToDepartmentResponse(department)).toList();
 
@@ -29,6 +33,7 @@ public class DepartmentService implements IDepartmentService {
 
     @Override
     public void addDepartment(DepartmentRequest request) {
+        log.info("Adding department with name: {}", request.getName());
         Department department = Department.builder()
                 .position(request.getPosition())
                 .employeeIds(request.getEmployeeIds())

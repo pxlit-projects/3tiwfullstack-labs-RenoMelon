@@ -4,6 +4,8 @@ import be.pxl.services.domain.Organization;
 import be.pxl.services.domain.dto.*;
 import be.pxl.services.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,9 +19,11 @@ public class OrganizationService implements IOrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final RestTemplate restTemplate;
+    private final static Logger log = LoggerFactory.getLogger(OrganizationService.class);
 
     @Override
     public List<OrganizationResponse> getAllOrganizations() {
+        log.info("Fetching all organizations from database...");
         List<Organization> organizations = organizationRepository.findAll();
         return organizations.stream().map(organization -> mapToOrganizationResponse(organization)).toList();
     }
