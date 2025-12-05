@@ -19,10 +19,7 @@ export class CustomerList implements OnInit{
   customerService: CustomerService = inject(CustomerService);
 
   ngOnInit(): void{
-
-    this.customerService.getCustomers().subscribe({
-     next: () => this.fetchData()
-    });
+    this.fetchData()
   }
 
 

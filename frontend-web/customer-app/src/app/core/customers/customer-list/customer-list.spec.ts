@@ -34,11 +34,12 @@ describe('CustomerList', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should call fetchData on initialization', () =>{
-    spyOn(component, 'fetchData');
+  it('should fetch customers on initialization', () => {
+    customerServiceMock.getCustomers.and.returnValue(of(mockCustomers));
     fixture.detectChanges();
-    expect(component.fetchData).toHaveBeenCalled();
-  })
+    expect(customerServiceMock.getCustomers).toHaveBeenCalled();
+    expect(component.filteredData).toEqual(mockCustomers);
+  });
 
   it('should fetch customers and set filteredData$', () => {
    customerServiceMock.getCustomers.and.returnValue(of(mockCustomers));
