@@ -35,7 +35,7 @@ export class CustomerService {
     return this.http.get<Customer>('api/customers/' + id);
   }
 
-  private isCustomerMatchingFilter(customer: Customer, filter: FilterModel): boolean {
+  public isCustomerMatchingFilter(customer: Customer, filter: FilterModel): boolean {
     const matchesName = customer.name.toLowerCase().includes(filter.name.toLowerCase());
     const matchesCity = customer.city.toLowerCase().includes(filter.city.toLowerCase());
     const matchesVat = filter.vat ? customer.vat === filter.vat : true;

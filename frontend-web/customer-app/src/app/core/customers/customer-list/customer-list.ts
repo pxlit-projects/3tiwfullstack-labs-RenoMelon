@@ -13,6 +13,7 @@ import { CustomerService } from '../../../shared/services/customerService';
   styleUrl: './customer-list.css',
 })
 export class CustomerList implements OnInit{
+  [x: string]: any;
 
   filteredData!: Customer[]
   customerService: CustomerService = inject(CustomerService);
